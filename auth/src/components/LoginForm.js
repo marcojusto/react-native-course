@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
-import firebase from 'firebase';
+//import firebase from 'firebase';
+//import firebase from 'react-native-firebase';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
-  state = { email: '', password: '', error: '', loading: false };
+  state = { email: '', password: '', phone: '', error: '', loading: false };
 
   onLoginSuccess() {
+    console.log('onSuccess');
     this.setState({
       email: '',
       password: '',
@@ -16,6 +18,7 @@ class LoginForm extends Component {
   }
 
   onLoginFail() {
+    console.log('onError');
     this.setState({
       error: 'Authentication Failed',
       loading: false
@@ -28,14 +31,22 @@ class LoginForm extends Component {
   }
 
   login() {
-    const { email, password } = this.state;
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(this.onLoginSuccess.bind(this))
-    .catch(() => {
-      firebase.auth().createUserWithEmailAndPassword(email, email)
+    console.log('logging in...');
+    const { email, password, phone } = this.state;
+    console.log(email);
+    console.log(password);
+    console.log(phone);
+    if (phone != null) {
+      firebase.auth().useDeviceLanguage();
+    } else {
+      firebase.auth().signInWithEmailAndPassword(email, password)
       .then(this.onLoginSuccess.bind(this))
-      .catch(this.onLoginFail.bind(this));
-    });
+      .catch(() => {
+        firebase.auth().createUserWithEmailAndPassword(email, email)
+        .then(this.onLoginSuccess.bind(this))
+        .catch(this.onLoginFail.bind(this));
+      });
+    }
   }
 
   renderButton() {
@@ -71,6 +82,19 @@ class LoginForm extends Component {
       value={this.state.password}
       onChangeText={password => this.setState({ password })}
       />
+      </CardSection>
+
+      <Text style={errorTextStyle}>
+        OR
+      </Text>
+
+      <CardSection>
+        <Input
+        label='Phone number'
+        placeholder='your_phone_number'
+        value={this.state.phone}
+        onChangeText={phone => this.setState({ phone })}
+        />
       </CardSection>
 
       <Text style={errorTextStyle}>
