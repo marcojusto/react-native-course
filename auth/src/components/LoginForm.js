@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 //import firebase from 'firebase';
-//import firebase from 'react-native-firebase';
+import firebase from 'react-native-firebase';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
-  state = { email: '', password: '', phone: '', error: '', loading: false };
+  state = { email: '',
+   password: '',
+    phone: '+351926927159',
+     error: '',
+     loading: false,
+      authingPhone: false,
+      verificationCode: '',
+      confirmResult: null
+     };
 
   onLoginSuccess() {
     console.log('onSuccess');
@@ -13,7 +21,11 @@ class LoginForm extends Component {
       email: '',
       password: '',
       loading: false,
-      error: ''
+      error: '',
+      phone: '',
+      authingPhone: false,
+      verificationCode: '',
+      confirmResult: null
     });
   }
 
@@ -21,11 +33,26 @@ class LoginForm extends Component {
     console.log('onError');
     this.setState({
       error: 'Authentication Failed',
-      loading: false
+      loading: false,
+      authingPhone: false,
+      verificationCode: false,
+      confirmResult: null
     });
   }
 
   onButtonPress() {
+    if (this.state.authingPhone) {
+      this.state.confirmResult.confirm(this.state.verificationCode)
+      .then(user => {
+        this.onLoginSuccess();
+      }) // User is logged in){
+      .catch(error => {
+        console.log(error);
+        this.onLoginFail();
+      });
+      return;
+    }
+
     this.setState({ error: '', loading: true });
     this.login();
   }
@@ -36,8 +63,16 @@ class LoginForm extends Component {
     console.log(email);
     console.log(password);
     console.log(phone);
-    if (phone != null) {
-      firebase.auth().useDeviceLanguage();
+    if (phone.length > 0) {      //firebase.auth().useDeviceLanguage();
+      firebase.auth().signInWithPhoneNumber(this.state.phone)
+      .then(confirmResult => {
+        console.log(confirmResult);
+        this.setState({ confirmResult, authingPhone: true, loading: false });
+        // Error with verification code);
+      })// save confirm result to use with the manual verification code)
+      .catch(error => {
+        console.log(error);
+      });
     } else {
       firebase.auth().signInWithEmailAndPassword(email, password)
       .then(this.onLoginSuccess.bind(this))
@@ -46,6 +81,21 @@ class LoginForm extends Component {
         .then(this.onLoginSuccess.bind(this))
         .catch(this.onLoginFail.bind(this));
       });
+    }
+  }
+
+  renderPhoneAuth() {
+    if (this.state.authingPhone) {
+      return (
+        <CardSection>
+         <Input
+        label='Verification Code'
+        placeholder='your_code'
+        value={this.state.verificationCode}
+        onChangeText={verificationCode => this.setState({ verificationCode })}
+         />
+        </CardSection>
+      );
     }
   }
 
@@ -85,25 +135,28 @@ class LoginForm extends Component {
       </CardSection>
 
       <Text style={errorTextStyle}>
-        OR
+      OR
       </Text>
 
       <CardSection>
-        <Input
-        label='Phone number'
-        placeholder='your_phone_number'
-        value={this.state.phone}
-        onChangeText={phone => this.setState({ phone })}
-        />
+      <Input
+      label='Phone number'
+      placeholder='your_phone_number'
+      value={this.state.phone}
+      onChangeText={phone => this.setState({ phone })}
+      />
       </CardSection>
 
       <Text style={errorTextStyle}>
       {this.state.error}
       </Text>
 
+      {this.renderPhoneAuth()}
+
       <CardSection>
       { this.renderButton() }
       </CardSection>
+
       </Card>
     );
   }

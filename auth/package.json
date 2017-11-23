@@ -4,11 +4,14 @@
 	"private": true,
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
+		"test": "jest",
+		"postinstall": "sed -i '' 's/\\[headers\\[@\"Content-Length\"\\] unsignedIntValue\\]/\\[headers\\[@\"Content-Length\"\\] intValue\\]/' ./node_modules/react-native/React/Base/RCTMultipartStreamReader.m"
 	},
 	"dependencies": {
+		"firebase": "^4.6.2",
 		"react": "16.0.0",
-		"react-native": "0.50.3"
+		"react-native": "0.50.3",
+		"react-native-firebase": "^3.1.0"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",

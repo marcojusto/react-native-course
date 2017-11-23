@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View } from 'react-native';
-//import firebase from 'firebase';
-import { Header, Button, Spinner } from './components/common';
+import firebase from 'react-native-firebase';
+import { Header, Button, Spinner, Card, CardSection } from './components/common';
 import LoginForm from './components/LoginForm';
 
 
@@ -9,6 +9,7 @@ class App extends Component {
   state = { loggedIn: null };
 
   componentWillMount() {
+    console.log('Component will mount');
     /*firebase.initializeApp({
         apiKey: 'AIzaSyAcqccDc4TOGetXMMHhpNGev--AavQMLsE',
          authDomain: 'authentication-6ce0b.firebaseapp.com',
@@ -16,7 +17,7 @@ class App extends Component {
          projectId: 'authentication-6ce0b',
          storageBucket: 'authentication-6ce0b.appspot.com',
          messagingSenderId: '201741515166'
-    });
+    });*/
 
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -24,22 +25,26 @@ class App extends Component {
         } else {
           this.setState({ loggedIn: false });
         }
-    });*/
+    });
   }
 
   logout() {
     console.log('logging out...');
-    //firebase.auth().signOut();
+    firebase.auth().signOut();
   }
 
   renderContent() {
     switch (this.state.loggedIn) {
       case true:
         return (
+          <Card>
+          <CardSection>
             <Button
               onPress={() => { this.logout(); }}
               text="Logout"
             />
+          </CardSection>
+          </Card>
         );
       case false:
         return <LoginForm />;
