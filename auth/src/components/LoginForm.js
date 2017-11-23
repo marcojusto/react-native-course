@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
-//import firebase from 'firebase';
 import firebase from 'react-native-firebase';
 import { Button, Card, CardSection, Input, Spinner } from './common';
 
 class LoginForm extends Component {
   state = { email: '',
    password: '',
-    phone: '+351926927159',
+    phone: '',
      error: '',
      loading: false,
       authingPhone: false,
@@ -44,6 +43,7 @@ class LoginForm extends Component {
     if (this.state.authingPhone) {
       this.state.confirmResult.confirm(this.state.verificationCode)
       .then(user => {
+        console.log(user);
         this.onLoginSuccess();
       }) // User is logged in){
       .catch(error => {
@@ -112,7 +112,7 @@ class LoginForm extends Component {
   }
 
   render() {
-    const { errorTextStyle } = styles;
+    const { errorTextStyle, normalTextStyle } = styles;
     return (
       <Card>
       <CardSection>
@@ -134,7 +134,7 @@ class LoginForm extends Component {
       />
       </CardSection>
 
-      <Text style={errorTextStyle}>
+      <Text style={normalTextStyle}>
       OR
       </Text>
 
@@ -147,7 +147,7 @@ class LoginForm extends Component {
       />
       </CardSection>
 
-      <Text style={errorTextStyle}>
+      <Text style={errorTextStyle} >
       {this.state.error}
       </Text>
 
@@ -164,9 +164,19 @@ class LoginForm extends Component {
 
 const styles = {
   errorTextStyle: {
+    marginTop: 10,
+    marginBottom: 10,
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
+  },
+  normalTextStyle: {
+    marginTop: 10,
+    marginBottom: 10,
+    fontSize: 20,
+    fontWeight: '600',
+    alignSelf: 'center',
+    color: 'black'
   }
 };
 
