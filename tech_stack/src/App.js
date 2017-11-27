@@ -7,7 +7,7 @@ import { Header } from './components/common';
 import LibraryList from './components/LibraryList';
 
 const App = () => {
-    return (
+  return (
       <Provider store={createStore(reducers)}>
         <SafeAreaView style={{ flex: 1 }}>
           <Header headerText="Tech Stack" />
