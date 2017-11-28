@@ -22,19 +22,19 @@ const styles = {
     //alignItems: 'space-around',
     height: 50,
     backgroundColor: '#808080',
-    borderRadius: 5,
+    //borderRadius: 5,
     borderWidth: 1,
     borderColor: '#fff',
-    marginLeft: 5,
-    marginRight: 5
+    //marginLeft: 5,
+    //marginRight: 5
   },
   textStyle: {
     alignSelf: 'center',
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    paddingTop: 10,
-    paddingBottom: 10
+    //paddingTop: 10,
+    //paddingBottom: 10
   }
 };
 
